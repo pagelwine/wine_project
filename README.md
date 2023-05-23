@@ -31,6 +31,7 @@ Clone the repo and run through the final report.
 
 ## Prepare
 
+- Adjust column names to be Python-readable
 - View/correct datatypes
 - Handle nulls (potential imputing)
 - Visualize full dataset for univariate exploration (histograms and boxplots)
