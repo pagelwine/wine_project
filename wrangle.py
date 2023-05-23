@@ -251,10 +251,10 @@ def get_model_numbers(X_train, X_validate, X_test, y_train, y_validate, y_test):
     metrics_validate_df.loc[4] = ['Generalized Linear Model (GLM)', rmse, r2]
 
 
-    X_test_degree2 = pf.transform(X_test)
-    pred_pr = pr.predict(X_test_degree2)
+    #X_test_degree2 = pf.transform(X_test)
+    pred_pr = glm.predict(X_test)
     rmse, r2 = metrics_reg(y_test, pred_pr)
-    metrics_test_df.loc[1] = ['Polynomial Regression(poly2)', round(rmse,2), r2]
+    metrics_test_df.loc[1] = ['Generalized Linear Model (GLM)', round(rmse,2), r2]
 
 
     return metrics_train_df, metrics_validate_df, metrics_test_df
@@ -274,3 +274,35 @@ def mvp_info(train_scaled, validate_scaled, test_scaled):
 
 
     return X_train, X_validate, X_test, y_train, y_validate, y_test
+
+
+def get_act_pred_viz(train_scaled, test_scaled, features, target_train, target_test):
+    '''Takes in train_scaled, test_scaled, list of features to send in, target_train and target test, and produces
+    a regression plot for actual vs predicted based on Polynomial model.'''
+
+    #Initialize the Polynomial Features
+    pf = PolynomialFeatures(degree=3)
+
+    #Fit and transform on train only, transform the test dataset based on the fit on train.
+
+    train_degree2 = pf.fit_transform(train_scaled[features])
+    test_degree2 = pf.transform(test_scaled[features])
+
+    #Initialize Linear Regression.
+    lr2 = LinearRegression(normalize=True)
+
+    #Fit Linear regression based on the transformed train dataset.
+    lr2.fit(train_degree2, target_train)
+
+    #Assign variables to put into sns.regplot's x and y values.
+    act = target_test
+    pred = lr2.predict(test_degree2)
+
+    #Creates regression plot for actual vs. predicted
+    sns.regplot(x=act, y=pred, line_kws={'color':'red'}, scatter_kws={'alpha': 0.1})
+    plt.xlabel('Actual Property Value, in Millions')
+    plt.ylabel('Predicted Property Value, in Millions')
+    plt.title('Visualization of Polynomial Model, Actual vs Predicted')
+    plt.axhline(target_train.mean(), c='black', linestyle='--') #Creates black dashed line that shows baseline
+    plt.text(x=2500000, y=500000, s='Baseline')
+    plt.show()
