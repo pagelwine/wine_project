@@ -260,12 +260,12 @@ def get_model_numbers(X_train, X_validate, X_test, y_train, y_validate, y_test):
     return metrics_train_df, metrics_validate_df, metrics_test_df
 
 
-def mvp_info(train_scaled, validate_scaled, test_scaled):
+def mvp_info(train_scaled, validate_scaled, test_scaled,list_of_features):
 
 
-    X_train = train_scaled[['alcohol', 'density', 'wine_type_white', 'cluster_clorid_diox_1', 'cluster_clorid_diox_2']]
-    X_validate = validate_scaled[['alcohol', 'density', 'wine_type_white', 'cluster_clorid_diox_1', 'cluster_clorid_diox_2']]
-    X_test = test_scaled[['alcohol', 'density', 'wine_type_white', 'cluster_clorid_diox_1', 'cluster_clorid_diox_2']]
+    X_train = train_scaled[[list_of_features]]
+    X_validate = validate_scaled[[list_of_features]]
+    X_test = test_scaled[[list_of_features]]
 
 
     y_train = train_scaled.quality
