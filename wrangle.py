@@ -338,7 +338,7 @@ def get_act_pred_viz(train_scaled, test_scaled, features, target_train, target_t
     plt.show()
 
 
-def create_knn(X_train,y_train, X_validate, y_validate, neighbors = 1):
+def create_knn(X_train,y_train, X_validate, y_validate):
     '''
     creating a logistic_regression model
     fitting the logistic_regression model
@@ -353,7 +353,7 @@ def create_knn(X_train,y_train, X_validate, y_validate, neighbors = 1):
     }
     ])
     for i in range(20):
-        knn = KNeighborsClassifier(n_neighbors=neighbors)
+        knn = KNeighborsClassifier(n_neighbors=i)
         knn.fit(X_train, y_train)
         train_predict = knn.score(X_train, y_train)
         validate_predict = knn.score(X_validate, y_validate)
@@ -369,10 +369,20 @@ def create_logistic_regression(X_train,y_train, X_validate, y_validate,the_c):
     fitting the logistic_regression model
     predicting the training and validate data
     '''
+    the_df = pd.DataFrame(data=[
+    {
+        'model_train':'knn',
+        'train_predict':2254/(2254+1268),
+        'validate_predict':2254/(2254+1268),
+        'n_neighbors': neighbors
+    }
+    ])
+
     logit = LogisticRegression(random_state= 123,C=the_c)
     logit.fit(X_train, y_train)
     train_predict = logit.score(X_train, y_train)
     validate_predict = logit.score(X_validate, y_validate)
+    the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, neighbors]
     return logit, train_predict, validate_predict
 
 
