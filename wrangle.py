@@ -393,9 +393,8 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, max_dept
     the_df = pd.DataFrame(data=[
     {
         'model_train':'baseline',
-        'model':[],
-        'train_predict':[],
-        'validate_predict':[]
+        'train_predict':2254/(2254+1268),
+        'validate_predict':2254/(2254+1268)
     }
     ])
 
@@ -404,26 +403,26 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, max_dept
     train_predict = knn.score(X_train, y_train)
     validate_predict = knn.score(X_validate, y_validate)
     knn, train_predict, validate_predict
-    the_df.loc[1] = ['KNeighborsClassifier', knn, train_predict, validate_predict]
+    the_df.loc[1] = ['KNeighborsClassifier', train_predict, validate_predict]
 
     logit = LogisticRegression(random_state= 123,C=the_c)
     logit.fit(X_train, y_train)
     train_predict = logit.score(X_train, y_train)
     validate_predict = logit.score(X_validate, y_validate)
-    the_df.loc[2] = ['LogisticRegression', logit, train_predict, validate_predict]
+    the_df.loc[2] = ['LogisticRegression', train_predict, validate_predict]
 
 
     forest = RandomForestClassifier(random_state = 123)
     forest.fit(X_train, y_train)    
     train_predict = forest.score(X_train, y_train)
     validate_predict = forest.score(X_validate, y_validate)
-    the_df.loc[3] = ['RandomForestClassifier', forest, train_predict, validate_predict]    
+    the_df.loc[3] = ['RandomForestClassifier', train_predict, validate_predict]    
 
 
     tree = DecisionTreeClassifier(random_state = 123,max_depth=max_depth)
     tree.fit(X_train, y_train)
     train_predict = tree.score(X_train, y_train)
     validate_predict = tree.score(X_validate, y_validate)
-    the_df.loc[4] = ['RandomForestClassifier', tree, train_predict, validate_predict]    
+    the_df.loc[4] = ['RandomForestClassifier', train_predict, validate_predict]    
 
     return the_df
