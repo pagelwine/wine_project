@@ -405,7 +405,7 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
     test_df = pd.DataFrame(data=[
     {
         'model_train':'knn',
-        'train_predict':2254/(2254+1268),
+        'baseline':2254/(2254+1268),
         'max_depth': 'max_depth'
     }
     ])
@@ -417,8 +417,10 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
         validate_predict = forest.score(X_validate, y_validate)
         the_df.loc[i + 1] = ['RandomForestClassifier', train_predict, validate_predict, i + 1]
 
+    forest = RandomForestClassifier(random_state = 123,max_depth=5 )
+    forest.fit(X_train, y_train)  
     test_predict = forest.score(X_test, y_test)
-    test_df.loc[1] = ['RandomForestClassifier', test_predict, 20]
+    test_df.loc[1] = ['RandomForestClassifier', test_predict, 5]
     
     return the_df, test_df
 
