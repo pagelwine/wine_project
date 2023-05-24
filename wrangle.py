@@ -48,10 +48,13 @@ def prepare_data(data):
             data[i] = data[i][data[i] < data[i].quantile(.99)].copy()
     data = data.dropna()
 
+    data['quality_bin'] = pd.qcut(data.quality, q=3, labels=['low','mid','high'])
+    data['quality_bin'] = np.where(data['quality_bin'] == 'low', 'bad', 'good')
+
     return data
 
 
-def split_data(df):
+def split_data(df, target):
     '''
     Takes in a dataframe and returns train, validate, test subset dataframes
     '''
@@ -60,12 +63,12 @@ def split_data(df):
     train, test = train_test_split(df,
                                    test_size=.2, 
                                    random_state=123, 
-                                   
+                                   stratify = df[target]
                                    )
     train, validate = train_test_split(train, 
                                        test_size=.25, 
                                        random_state=123, 
-                                       
+                                       stratify = train[target]
                                        )
     
     return train, validate, test
