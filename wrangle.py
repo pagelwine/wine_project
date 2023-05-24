@@ -101,7 +101,9 @@ def chi2_test(train, columns_list):
     for iteration, col in enumerate(columns_list):
         
         observed = pd.crosstab(train[col[0]], train[col[1]])
+        print(observed)
         chi2, p, degf, expected = stats.chi2_contingency(observed)
+
         chi_df.loc[iteration+1] = [col, chi2, p, degf, expected]
     return chi_df
 
@@ -116,9 +118,9 @@ def comparison_of_means_3(train, features):
     
     for iteration, feature in enumerate(features):
         if feature != 'quality':
-            t, p = stats.f_oneway(train['quality'][train[feature] == 0],
-                            train['quality'][train[feature] == 1],
-                            train['quality'][train[feature] == 2],
+            t, p = stats.f_oneway(train['quality_bin'][train[feature] == 0],
+                            train['quality_bin'][train[feature] == 1],
+                            train['quality_bin'][train[feature] == 2],
                             )
             means_df.loc[iteration] = [feature, t, p]
 
@@ -133,8 +135,8 @@ def comparison_of_means_2(train, features):
     
     for iteration, feature in enumerate(features):
         if feature != 'quality':
-            t, p = stats.f_oneway(train['quality'][train[feature] == 0],
-                            train['quality'][train[feature] == 1],
+            t, p = stats.ttest_ind(train['quality_bin'][train[feature] == 'bad'],
+                            train['quality_bin'][train[feature] == 'good'],
                             )
             means_df.loc[iteration] = [feature, t, p]
 
