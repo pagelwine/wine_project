@@ -363,7 +363,7 @@ def create_knn(X_train,y_train, X_validate, y_validate):
     return the_df
 
 
-def create_logistic_regression(X_train,y_train, X_validate, y_validate,the_c):
+def create_logistic_regression(X_train,y_train, X_validate, y_validate):
     '''
     creating a logistic_regression model
     fitting the logistic_regression model
@@ -439,7 +439,7 @@ def create_descision_tree(X_train,y_train, X_validate, y_validate):
 
     return the_df
 
-def super_classification_model(X_train,y_train, X_validate, y_validate, max_depth = 3, the_c = 1, weights ='uniform', neighbors = 20):
+def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 1, neighbors = 20):
     the_df = pd.DataFrame(data=[
     {
         'model_train':'baseline',
@@ -448,7 +448,7 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, max_dept
     }
     ])
 
-    knn = KNeighborsClassifier(n_neighbors=neighbors,weights='uniform')
+    knn = KNeighborsClassifier(n_neighbors=neighbors)
     knn.fit(X_train, y_train)
     train_predict = knn.score(X_train, y_train)
     validate_predict = knn.score(X_validate, y_validate)
@@ -462,14 +462,14 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, max_dept
     the_df.loc[2] = ['LogisticRegression', train_predict, validate_predict]
 
 
-    forest = RandomForestClassifier(random_state = 123)
+    forest = RandomForestClassifier(random_state = 123, max_depth=5)
     forest.fit(X_train, y_train)    
     train_predict = forest.score(X_train, y_train)
     validate_predict = forest.score(X_validate, y_validate)
     the_df.loc[3] = ['RandomForestClassifier', train_predict, validate_predict]    
 
 
-    tree = DecisionTreeClassifier(random_state = 123,max_depth=max_depth)
+    tree = DecisionTreeClassifier(random_state = 123,max_depth=6)
     tree.fit(X_train, y_train)
     train_predict = tree.score(X_train, y_train)
     validate_predict = tree.score(X_validate, y_validate)
