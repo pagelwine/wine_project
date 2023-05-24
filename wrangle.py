@@ -349,15 +349,15 @@ def create_knn(X_train,y_train, X_validate, y_validate):
         'model_train':'knn',
         'train_predict':2254/(2254+1268),
         'validate_predict':2254/(2254+1268),
-        'n_neighbors':neighbors
+        'n_neighbors': 'neighbors'
     }
     ])
     for i in range(20):
-        knn = KNeighborsClassifier(n_neighbors=i)
+        knn = KNeighborsClassifier(n_neighbors=i+1)
         knn.fit(X_train, y_train)
         train_predict = knn.score(X_train, y_train)
         validate_predict = knn.score(X_validate, y_validate)
-        the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, neighbors]
+        the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, i+1]
 
 
     return the_df
@@ -411,7 +411,7 @@ def create_descision_tree(X_train,y_train, X_validate, y_validate,max_depth):
     validate_predict = tree.score(X_validate, y_validate)
     return tree, train_predict, validate_predict, max_depth
 
-def super_classification_model(X_train,y_train, X_validate, y_validate, max_depth = 3, the_c = 1, weights ='uniform', neighbors = 1):
+def super_classification_model(X_train,y_train, X_validate, y_validate, max_depth = 3, the_c = 1, weights ='uniform', neighbors = 20):
     the_df = pd.DataFrame(data=[
     {
         'model_train':'baseline',
