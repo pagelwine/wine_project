@@ -29,6 +29,13 @@ from sklearn.linear_model import LassoLars
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import TweedieRegressor
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import plot_tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+
 
 def get_data():
     return pd.read_csv('wines.csv')
@@ -64,10 +71,10 @@ def split_data(df):
     return train, validate, test
 
 
-def get_cluster_columns(train, features_list, clusters =3, init_array='k-means++', iterations = 300):
+def get_cluster_columns(train, validate, features_list, clusters =3, init_array='k-means++', iterations = 300):
     
     for list_item in features_list:
-        print(list_item[0])
+        
         X = train[[list_item[0], list_item[1]]]
 
         kmeans = KMeans(n_clusters=clusters
@@ -77,6 +84,19 @@ def get_cluster_columns(train, features_list, clusters =3, init_array='k-means++
         kmeans.fit(X)
 
         train[list_item[0] + '_' + list_item[1]] = kmeans.predict(X)
+
+
+        X = validate[[list_item[0], list_item[1]]]
+
+        kmeans = KMeans(n_clusters=clusters
+                , init = init_array
+                , max_iter=iterations
+            )
+        kmeans.fit(X)
+
+        validate[list_item[0] + '_' + list_item[1]] = kmeans.predict(X)
+
+    return train, validate
 
 
 
@@ -320,3 +340,94 @@ def get_act_pred_viz(train_scaled, test_scaled, features, target_train, target_t
     plt.axhline(target_train.mean(), c='black', linestyle='--') #Creates black dashed line that shows baseline
     plt.text(x=2500000, y=500000, s='Baseline')
     plt.show()
+
+
+def create_knn(X_train,y_train, X_validate, y_validate):
+    '''
+    creating a logistic_regression model
+    fitting the logistic_regression model
+    predicting the training and validate data
+    '''
+    knn = KNeighborsClassifier(n_neighbors=1,weights='uniform')
+    knn.fit(X_train, y_train)
+    train_predict = knn.score(X_train, y_train)
+    validate_predict = knn.score(X_validate, y_validate)
+    return knn, train_predict, validate_predict
+
+
+def create_logistic_regression(X_train,y_train, X_validate, y_validate,the_c):
+    '''
+    creating a logistic_regression model
+    fitting the logistic_regression model
+    predicting the training and validate data
+    '''
+    logit = LogisticRegression(random_state= 123,C=the_c)
+    logit.fit(X_train, y_train)
+    train_predict = logit.score(X_train, y_train)
+    validate_predict = logit.score(X_validate, y_validate)
+    return logit, train_predict, validate_predict
+
+
+def create_random_forest(X_train,y_train, X_validate, y_validate):
+    '''
+    creating a random_forest model
+    fitting the random_forest model
+    predicting the training and validate data
+    '''
+    forest = RandomForestClassifier(random_state = 123)
+    forest.fit(X_train, y_train)    
+    train_predict = forest.score(X_train, y_train)
+    validate_predict = forest.score(X_validate, y_validate)
+    return forest, train_predict, validate_predict
+
+
+def create_descision_tree(X_train,y_train, X_validate, y_validate,max_depth):
+    '''
+    creating a Decision tree model
+    fitting the Descision tree model
+    predicting the training and validate data
+    '''
+    tree = DecisionTreeClassifier(random_state = 123,max_depth=max_depth)
+    tree.fit(X_train, y_train)
+    train_predict = tree.score(X_train, y_train)
+    validate_predict = tree.score(X_validate, y_validate)
+    return tree, train_predict, validate_predict, max_depth
+
+def super_classification_model(X_train,y_train, X_validate, y_validate, max_depth = 3, the_c = 1, weights ='uniform', neighbors = 1):
+    the_df = pd.DataFrame(data=[
+    {
+        'model_train':'baseline',
+        'model':[],
+        'train_predict':[],
+        'validate_predict':[]
+    }
+    ])
+
+    knn = KNeighborsClassifier(n_neighbors=neighbors,weights='uniform')
+    knn.fit(X_train, y_train)
+    train_predict = knn.score(X_train, y_train)
+    validate_predict = knn.score(X_validate, y_validate)
+    knn, train_predict, validate_predict
+    the_df.loc[1] = ['KNeighborsClassifier', knn, train_predict, validate_predict]
+
+    logit = LogisticRegression(random_state= 123,C=the_c)
+    logit.fit(X_train, y_train)
+    train_predict = logit.score(X_train, y_train)
+    validate_predict = logit.score(X_validate, y_validate)
+    the_df.loc[2] = ['LogisticRegression', logit, train_predict, validate_predict]
+
+
+    forest = RandomForestClassifier(random_state = 123)
+    forest.fit(X_train, y_train)    
+    train_predict = forest.score(X_train, y_train)
+    validate_predict = forest.score(X_validate, y_validate)
+    the_df.loc[3] = ['RandomForestClassifier', forest, train_predict, validate_predict]    
+
+
+    tree = DecisionTreeClassifier(random_state = 123,max_depth=max_depth)
+    tree.fit(X_train, y_train)
+    train_predict = tree.score(X_train, y_train)
+    validate_predict = tree.score(X_validate, y_validate)
+    the_df.loc[4] = ['RandomForestClassifier', tree, train_predict, validate_predict]    
+
+    return the_df
