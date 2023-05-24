@@ -388,7 +388,7 @@ def create_logistic_regression(X_train,y_train, X_validate, y_validate):
     return the_df
 
 
-def create_random_forest(X_train,y_train, X_validate, y_validate):
+def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test):
     '''
     creating a random_forest model
     fitting the random_forest model
@@ -402,6 +402,13 @@ def create_random_forest(X_train,y_train, X_validate, y_validate):
         'max_depth': 'max_depth'
     }
     ])
+    test_df = pd.DataFrame(data=[
+    {
+        'model_train':'knn',
+        'train_predict':2254/(2254+1268),
+        'max_depth': 'max_depth'
+    }
+    ])
 
     for i in range(20):
         forest = RandomForestClassifier(random_state = 123,max_depth=i +1 )
@@ -409,8 +416,13 @@ def create_random_forest(X_train,y_train, X_validate, y_validate):
         train_predict = forest.score(X_train, y_train)
         validate_predict = forest.score(X_validate, y_validate)
         the_df.loc[i + 1] = ['RandomForestClassifier', train_predict, validate_predict, i + 1]
+
+    test_predict = forest.score(X_test, y_test)
+    test_df.loc[1] = ['RandomForestClassifier', test_predict, 20]
     
-    return the_df
+    return the_df, test_df
+
+
 
 
 def create_descision_tree(X_train,y_train, X_validate, y_validate):
