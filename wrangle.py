@@ -360,7 +360,7 @@ def create_knn(X_train,y_train, X_validate, y_validate, neighbors = 1):
         the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, neighbors]
 
 
-    return knn, train_predict, validate_predict
+    return the_df
 
 
 def create_logistic_regression(X_train,y_train, X_validate, y_validate,the_c):
