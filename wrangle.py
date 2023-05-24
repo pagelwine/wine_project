@@ -73,6 +73,18 @@ def get_dummies_and_hot_encoded(train):
     train['cluster_fix_vol_acid'] = kmeans.predict(X)
 
 
+    #=======================
+    X = train[['free_sulfur_dioxide', 'alcohol']]
+    kmeans = KMeans(n_clusters=2
+                    , init = np.array([[0.3,0.3], [0.5,0.6]], np.float64)
+                    , max_iter=1
+                )
+    kmeans.fit(X)
+    train['fsd_a'] = kmeans.predict(X)
+    #=======================
+
+
+
     X = train[['citric_acid', 'residual_sugar']]
 
     kmeans = KMeans(n_clusters=3)
@@ -96,36 +108,41 @@ def get_dummies_and_hot_encoded(train):
 
     train = pd.concat([train, dummy], axis=1)
 
+
+
+
     return train
 
 
-def comparison_of_means(train):
-
+def comparison_of_means_3(train, features):
     means_df = pd.DataFrame({'feature': [],
                         'T': [],
                        'P': []})
     
-    t, p = stats.f_oneway(train['quality'][train['cluster_fix_vol_acid'] == 0],
-                     train['quality'][train['cluster_fix_vol_acid'] == 1],
-                     train['quality'][train['cluster_fix_vol_acid'] == 2],
-                    )
-    means_df.loc[1] = ['cluster_fix_vol_acid', t, p]
+    for iteration, feature in enumerate(features):
+        if feature != 'quality':
+            t, p = stats.f_oneway(train['quality'][train[feature] == 0],
+                            train['quality'][train[feature] == 1],
+                            train['quality'][train[feature] == 2],
+                            )
+            means_df.loc[iteration] = [feature, t, p]
 
 
-    t, p = stats.f_oneway(train['quality'][train['cluster_cit_acd_res_sug'] == 0],
-                     train['quality'][train['cluster_cit_acd_res_sug'] == 1],
-                     train['quality'][train['cluster_cit_acd_res_sug'] == 2],
-                    )
-
-    means_df.loc[2] = ['cluster_cit_acd_res_sug', t, p]
+    return means_df
 
 
-    t, p = stats.f_oneway(train['quality'][train['cluster_clorid_diox'] == 0],
-                     train['quality'][train['cluster_clorid_diox'] == 1],
-                     train['quality'][train['cluster_clorid_diox'] == 2],
-                    )
+def comparison_of_means_2(train, features):
+    means_df = pd.DataFrame({'feature': [],
+                        'T': [],
+                       'P': []})
+    
+    for iteration, feature in enumerate(features):
+        if feature != 'quality':
+            t, p = stats.f_oneway(train['quality'][train[feature] == 0],
+                            train['quality'][train[feature] == 1],
+                            )
+            means_df.loc[iteration] = [feature, t, p]
 
-    means_df.loc[3] = ['cluster_clorid_diox', t, p]
 
     return means_df
 
