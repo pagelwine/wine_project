@@ -64,54 +64,49 @@ def split_data(df):
     return train, validate, test
 
 
-def get_dummies_and_hot_encoded(train):
-    X = train[['fixed_acidity', 'volatile_acidity']]
+def get_cluster_columns(train, features_list, clusters =3, init_array='k-means++', iterations = 300):
+    
+    for list_item in features_list:
+        print(list_item[0])
+        X = train[[list_item[0], list_item[1]]]
 
-    kmeans = KMeans(n_clusters=3)
-    kmeans.fit(X)
+        kmeans = KMeans(n_clusters=clusters
+                , init = init_array
+                , max_iter=iterations
+            )
+        kmeans.fit(X)
 
-    train['cluster_fix_vol_acid'] = kmeans.predict(X)
-
-
-    #=======================
-    X = train[['free_sulfur_dioxide', 'alcohol']]
-    kmeans = KMeans(n_clusters=2
-                    , init = np.array([[0.3,0.3], [0.5,0.6]], np.float64)
-                    , max_iter=1
-                )
-    kmeans.fit(X)
-    train['fsd_a'] = kmeans.predict(X)
-    #=======================
+        train[list_item[0] + '_' + list_item[1]] = kmeans.predict(X)
 
 
 
-    X = train[['citric_acid', 'residual_sugar']]
-
-    kmeans = KMeans(n_clusters=3)
-    kmeans.fit(X)
-
-    train['cluster_cit_acd_res_sug'] = kmeans.predict(X)
-
-
-    X = train[['chlorides', 'free_sulfur_dioxide']]
-
-    kmeans = KMeans(n_clusters=3)
-    kmeans.fit(X)
-
-    train['cluster_clorid_diox'] = kmeans.predict(X)
-
-
-    dummies_columns = train[['wine_type','cluster_clorid_diox']]
+def get_dummies(train):
+    dummies_columns = train[['wine_type']]
     
 
     dummy = pd.get_dummies(dummies_columns, columns = dummies_columns.columns, drop_first=True)
 
     train = pd.concat([train, dummy], axis=1)
 
-
-
-
     return train
+
+
+def chi2_test(train, columns_list):
+    chi_df = pd.DataFrame({'feature': [],
+                    'chi2': [],
+                    'p': [],
+                    'degf':[],
+                    'expected':[]})
+    
+    for iteration, col in enumerate(columns_list):
+        print(train[col[0]])
+        observed = pd.crosstab(train[col[0]], train[col[1]])
+        chi2, p, degf, expected = stats.chi2_contingency(observed)
+        chi_df.loc[iteration+1] = [col, chi2, p, degf, expected]
+    return chi_df
+
+
+
 
 
 def comparison_of_means_3(train, features):
