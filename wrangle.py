@@ -99,7 +99,7 @@ def chi2_test(train, columns_list):
                     'expected':[]})
     
     for iteration, col in enumerate(columns_list):
-        print(train[col[0]])
+        
         observed = pd.crosstab(train[col[0]], train[col[1]])
         chi2, p, degf, expected = stats.chi2_contingency(observed)
         chi_df.loc[iteration+1] = [col, chi2, p, degf, expected]
