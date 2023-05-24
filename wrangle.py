@@ -371,7 +371,7 @@ def create_logistic_regression(X_train,y_train, X_validate, y_validate):
     '''
     the_df = pd.DataFrame(data=[
     {
-        'model_train':'knn',
+        'model_train':'LogisticRegression',
         'train_predict':2254/(2254+1268),
         'validate_predict':2254/(2254+1268),
         'C': 'the_c'
@@ -396,7 +396,7 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
     '''
     the_df = pd.DataFrame(data=[
     {
-        'model_train':'knn',
+        'model_train':'RandomForestClassifier',
         'train_predict':2254/(2254+1268),
         'validate_predict':2254/(2254+1268),
         'max_depth': 'max_depth'
@@ -404,7 +404,7 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
     ])
     test_df = pd.DataFrame(data=[
     {
-        'model_train':'knn',
+        'model_train':'RandomForestClassifier',
         'baseline':2254/(2254+1268),
         'max_depth': 'max_depth'
     }
@@ -436,7 +436,7 @@ def create_descision_tree(X_train,y_train, X_validate, y_validate):
 
     the_df = pd.DataFrame(data=[
     {
-        'model_train':'knn',
+        'model_train':'DecisionTreeClassifier',
         'train_predict':2254/(2254+1268),
         'validate_predict':2254/(2254+1268),
         'max_depth': 'max_depth'
