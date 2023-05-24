@@ -71,7 +71,7 @@ def split_data(df):
     return train, validate, test
 
 
-def get_cluster_columns(train, validate, features_list, clusters =3, init_array='k-means++', iterations = 300):
+def get_cluster_columns(train, validate, test, features_list, clusters =3, init_array='k-means++', iterations = 300):
     
     for list_item in features_list:
         
@@ -85,18 +85,15 @@ def get_cluster_columns(train, validate, features_list, clusters =3, init_array=
 
         train[list_item[0] + '_' + list_item[1]] = kmeans.predict(X)
 
+        Y = validate[[list_item[0], list_item[1]]]
 
-        X = validate[[list_item[0], list_item[1]]]
+        validate[list_item[0] + '_' + list_item[1]] = kmeans.predict(Y)
 
-        kmeans = KMeans(n_clusters=clusters
-                , init = init_array
-                , max_iter=iterations
-            )
-        kmeans.fit(X)
+        Z = test[[list_item[0], list_item[1]]]
 
-        validate[list_item[0] + '_' + list_item[1]] = kmeans.predict(X)
+        test[list_item[0] + '_' + list_item[1]] = kmeans.predict(Z)
 
-    return train, validate
+    return train, validate, test 
 
 
 
