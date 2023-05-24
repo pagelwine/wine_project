@@ -338,16 +338,28 @@ def get_act_pred_viz(train_scaled, test_scaled, features, target_train, target_t
     plt.show()
 
 
-def create_knn(X_train,y_train, X_validate, y_validate):
+def create_knn(X_train,y_train, X_validate, y_validate, neighbors = 1):
     '''
     creating a logistic_regression model
     fitting the logistic_regression model
     predicting the training and validate data
     '''
-    knn = KNeighborsClassifier(n_neighbors=1,weights='uniform')
-    knn.fit(X_train, y_train)
-    train_predict = knn.score(X_train, y_train)
-    validate_predict = knn.score(X_validate, y_validate)
+    the_df = pd.DataFrame(data=[
+    {
+        'model_train':'knn',
+        'train_predict':2254/(2254+1268),
+        'validate_predict':2254/(2254+1268),
+        'n_neighbors':neighbors
+    }
+    ])
+    for i in range(20):
+        knn = KNeighborsClassifier(n_neighbors=neighbors)
+        knn.fit(X_train, y_train)
+        train_predict = knn.score(X_train, y_train)
+        validate_predict = knn.score(X_validate, y_validate)
+        the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, neighbors]
+
+
     return knn, train_predict, validate_predict
 
 
@@ -423,6 +435,6 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, max_dept
     tree.fit(X_train, y_train)
     train_predict = tree.score(X_train, y_train)
     validate_predict = tree.score(X_validate, y_validate)
-    the_df.loc[4] = ['RandomForestClassifier', train_predict, validate_predict]    
+    the_df.loc[4] = ['DecisionTreeClassifier', train_predict, validate_predict]    
 
     return the_df
