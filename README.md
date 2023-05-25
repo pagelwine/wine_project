@@ -12,7 +12,22 @@ We believe that density, pH, alcohol, and sulphates will be the best predictors 
 
 # Data Dictionary
 
-TBD
+Column Name | Description | Key
+--- | --- | ---
+fixed_acidity | the difference between total acidity and volatile acidity | milliequivalents per liter (int)
+volatile_acidity | measure of volatile acids (acids that readily evaporate) | grams of acetic acid per liter (int)
+citric_acid | weak organic acid naturally occurring in fruits | 
+residual_sugar | amount of sugar remaining after fermentation | grams per liter (int)
+chlorides | amount of salt in wine | 
+free_sulfur_dioxide | free form of SO$\2$, used as preservative | 
+total_sulfur_dioxide | total of free SO$\2$ and SO$\2$ bound to other chemicals | 
+density | mass per unit volume of wine at 20°C | 
+pH | measure of wine from basic to acidic | [0-14], wines are usually between [3-4]
+sulphates | additive that contributes to SO$\2$ levels | 
+alcohol | percent alcohol content of wine | percentage (float) 
+quality | quality of wine (numeric) | [0-9]
+wine_type | type of wine | [Red, White]
+quality_bin | quality of wine (category) | [Good, Bad]
 
 # Steps to Reproduce
 
