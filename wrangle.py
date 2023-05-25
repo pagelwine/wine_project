@@ -504,15 +504,15 @@ def subplots_one(train):
 
     plt.subplot(131)
     sns.scatterplot(data=train, x='chlorides', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
-    plt.title('Good quality wines have higher alcohol content and low chlorides.')
+    
 
     plt.subplot(132)
     sns.scatterplot(data=train, x='volatile_acidity', y='density', hue='quality_bin', palette=c_list, alpha=0.2)
-    plt.title('Good wines have low volatile acidity')
+    
 
     plt.subplot(133)
     sns.scatterplot(data=train, x='volatile_acidity', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
-    plt.title('Bad wines tend to have low alcohol content and higher volatile acidity')
+    
 
     plt.tight_layout()
     plt.show()
