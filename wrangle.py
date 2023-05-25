@@ -36,12 +36,18 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
 
-
 def get_data():
+    '''
+    Reads the csv and converts it to a pandas dataframe
+    '''
     return pd.read_csv('wines.csv')
 
 
 def prepare_data(data):
+    '''
+    Removes upwanted outiers, replaces column spaces with underscores, drops nulls, and
+    creates the quality bins for the target variable
+    '''
     data.columns = data.columns.str.replace(' ', '_')
     for i in data.columns:
         if i not in ['wine_type', 'quality']:
@@ -101,8 +107,10 @@ def get_cluster_columns(train, validate, test, features_list
     return train, validate, test 
 
 
-
 def get_dummies(train):
+    '''
+    gets hot-encoded columns for wine type
+    '''
     dummies_columns = train[['wine_type']]
     
 
@@ -114,6 +122,9 @@ def get_dummies(train):
 
 
 def chi2_test(train, columns_list):
+    '''
+    Runs a chi2 test on all items in a list of lists and returns a pandas dataframe
+    '''
     chi_df = pd.DataFrame({'feature': [],
                     'chi2': [],
                     'p': [],
@@ -126,46 +137,14 @@ def chi2_test(train, columns_list):
         chi2, p, degf, expected = stats.chi2_contingency(observed)
 
         chi_df.loc[iteration+1] = [col, chi2, p, degf, expected]
+        
     return chi_df
 
 
-
-
-
-def comparison_of_means_3(train, features):
-    means_df = pd.DataFrame({'feature': [],
-                        'T': [],
-                       'P': []})
-    
-    for iteration, feature in enumerate(features):
-        if feature != 'quality':
-            t, p = stats.f_oneway(train['quality_bin'][train[feature] == 0],
-                            train['quality_bin'][train[feature] == 1],
-                            train['quality_bin'][train[feature] == 2],
-                            )
-            means_df.loc[iteration] = [feature, t, p]
-
-
-    return means_df
-
-
-def comparison_of_means_2(train, features):
-    means_df = pd.DataFrame({'feature': [],
-                        'T': [],
-                       'P': []})
-    
-    for iteration, feature in enumerate(features):
-        if feature != 'quality':
-            t, p = stats.ttest_ind(train['quality_bin'][train[feature] == 'bad'],
-                            train['quality_bin'][train[feature] == 'good'],
-                            )
-            means_df.loc[iteration] = [feature, t, p]
-
-
-    return means_df
-
-
 def correlation_tests(train):
+    '''
+    Runs a correlation test on dataframe features vs target variable
+    '''
     corr_df = pd.DataFrame({'feature': [],
                         'r': [],
                        'p': []})
@@ -193,6 +172,7 @@ def scale_data(train,
     train_scaled[cols] = scaler.transform(train[cols])
     validate_scaled[cols] = scaler.transform(validate[cols])
     test_scaled[cols] = scaler.transform(test[cols])
+
     return train_scaled, validate_scaled, test_scaled
 
 
@@ -202,6 +182,7 @@ def metrics_reg(y, yhat):
     '''
     rmse = mean_squared_error(y, yhat, squared=False)
     r2 = r2_score(y, yhat)
+
     return rmse, r2
 
 
@@ -291,13 +272,13 @@ def get_model_numbers(X_train, X_validate, X_test, y_train, y_validate, y_test):
     rmse, r2 = metrics_reg(y_test, pred_pr)
     metrics_test_df.loc[1] = ['Generalized Linear Model (GLM)', round(rmse,2), r2]
 
-
     return metrics_train_df, metrics_validate_df, metrics_test_df
 
 
 def mvp_info(train_scaled, validate_scaled, test_scaled,list_of_features):
-
-
+    '''
+    Takes in scaled data and a list of features to create the different feature and target variable objects
+    '''
     X_train = train_scaled[list_of_features]
     X_validate = validate_scaled[list_of_features]
     X_test = test_scaled[list_of_features]
@@ -306,7 +287,6 @@ def mvp_info(train_scaled, validate_scaled, test_scaled,list_of_features):
     y_train = train_scaled.quality_bin
     y_validate = validate_scaled.quality_bin
     y_test = test_scaled.quality_bin
-
 
     return X_train, X_validate, X_test, y_train, y_validate, y_test
 
@@ -363,7 +343,6 @@ def create_knn(X_train,y_train, X_validate, y_validate):
         train_predict = knn.score(X_train, y_train)
         validate_predict = knn.score(X_validate, y_validate)
         the_df.loc[i+1] = ['KNeighborsClassifier', train_predict, validate_predict, i+1]
-
 
     return the_df
 
@@ -458,7 +437,11 @@ def create_descision_tree(X_train,y_train, X_validate, y_validate):
 
     return the_df
 
+
 def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 1, neighbors = 20):
+    '''
+    Runs classification models based on our best parameters and returns a pandas dataframe
+    '''
     the_df = pd.DataFrame(data=[
     {
         'model_train':'baseline',
@@ -498,6 +481,9 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 
 
 
 def correlation_charts(train):
+    '''
+    Creates and shows visuals for Correlation tests 
+    '''
     plt.figure(figsize=(14,3))
     plt.suptitle('Bivariate Exploration: The Strongest Correlators of Wine Quality')
     for i, col in enumerate(train[['density', 'chlorides', 'alcohol', 'volatile_acidity', 'quality']]):
@@ -509,6 +495,9 @@ def correlation_charts(train):
 
 
 def subplots_one(train):
+    '''
+    creates visuals of the best possible features for the creating of cluster columns
+    '''
     c_list = ['red', 'green']
 
     plt.figure(figsize=(14,5))
@@ -530,6 +519,9 @@ def subplots_one(train):
 
 
 def train_scaled_two(train, train_scaled, c_list):
+    '''
+    Creates visuals showing the way the data can be split into clusters
+    '''
     plt.figure(figsize=(15, 10))
 
     plt.subplot(2,2,1)
@@ -542,7 +534,9 @@ def train_scaled_two(train, train_scaled, c_list):
 
 
 def train_scaled_three(train, train_scaled, c_list):
-
+    '''
+    Creates visuals showing the way the data can be split into clusters
+    '''
     plt.figure(figsize=(15, 10))
 
     plt.subplot(2,2,1)
@@ -553,7 +547,11 @@ def train_scaled_three(train, train_scaled, c_list):
 
     plt.show()
 
+
 def train_scaled_four(train, train_scaled, c_list):
+    '''
+    Creates visuals showing the way the data can be split into clusters
+    '''
     plt.figure(figsize=(15, 10))
 
     plt.subplot(2,2,1)
@@ -563,6 +561,3 @@ def train_scaled_four(train, train_scaled, c_list):
     sns.scatterplot(data=train_scaled, x='chlorides', y='alcohol', hue='chlorides_alcohol', palette= ['green', 'red'], alpha=0.2)
 
     plt.show()
-
-
-
