@@ -74,14 +74,16 @@ def split_data(df, target):
     return train, validate, test
 
 
-def get_cluster_columns(train, validate, test, features_list, clusters =3, init_array='k-means++', iterations = 300):
+def get_cluster_columns(train, validate, test, features_list
+                        , clusters =3, init_array='k-means++'
+                        , iterations = 1):
     
-    for list_item in features_list:
+    for iteration, list_item in enumerate(features_list):
 
         X = train[[list_item[0], list_item[1]]]
        
         kmeans = KMeans(n_clusters=clusters
-                , init = init_array
+                , init = init_array[iteration]
                 , max_iter=iterations
             )
         kmeans.fit(X)
@@ -420,10 +422,10 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
         validate_predict = forest.score(X_validate, y_validate)
         the_df.loc[i + 1] = ['RandomForestClassifier', train_predict, validate_predict, i + 1]
 
-    forest = RandomForestClassifier(random_state = 123,max_depth=5 )
+    forest = RandomForestClassifier(random_state = 123,max_depth=4 )
     forest.fit(X_train, y_train)  
     test_predict = forest.score(X_test, y_test)
-    test_df.loc[1] = ['RandomForestClassifier', test_predict, 5]
+    test_df.loc[1] = ['RandomForestClassifier', test_predict, 4]
     
     return the_df, test_df
 
@@ -547,7 +549,7 @@ def train_scaled_three(train, train_scaled, c_list):
     sns.scatterplot(data=train, x='volatile_acidity', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
 
     plt.subplot(2,2,2)
-    sns.scatterplot(data=train_scaled, x='volatile_acidity', y='alcohol', hue='volatile_acidity_density', palette= ['green', 'red'], alpha=0.2)
+    sns.scatterplot(data=train_scaled, x='volatile_acidity', y='alcohol', hue='volatile_acidity_alcohol', palette= ['green', 'red'], alpha=0.2)
 
     plt.show()
 
@@ -561,3 +563,6 @@ def train_scaled_four(train, train_scaled, c_list):
     sns.scatterplot(data=train_scaled, x='chlorides', y='alcohol', hue='chlorides_alcohol', palette= ['green', 'red'], alpha=0.2)
 
     plt.show()
+
+
+
