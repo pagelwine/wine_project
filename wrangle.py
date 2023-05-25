@@ -137,7 +137,7 @@ def chi2_test(train, columns_list):
         chi2, p, degf, expected = stats.chi2_contingency(observed)
 
         chi_df.loc[iteration+1] = [col, chi2, p, degf, expected]
-        
+
     return chi_df
 
 
@@ -404,7 +404,7 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
     forest = RandomForestClassifier(random_state = 123,max_depth=4 )
     forest.fit(X_train, y_train)  
     test_predict = forest.score(X_test, y_test)
-    test_df.loc[1] = ['RandomForestClassifier', test_predict, 4]
+    test_df.loc[1] = ['RandomForestClassifier', round(test_predict, 3), 4]
     
     return the_df, test_df
 
@@ -455,27 +455,27 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 
     train_predict = knn.score(X_train, y_train)
     validate_predict = knn.score(X_validate, y_validate)
     knn, train_predict, validate_predict
-    the_df.loc[1] = ['KNeighborsClassifier', train_predict, validate_predict]
+    the_df.loc[1] = ['KNeighborsClassifier', round(train_predict, 3), round(validate_predict, 3)]
 
     logit = LogisticRegression(random_state= 123,C=the_c)
     logit.fit(X_train, y_train)
     train_predict = logit.score(X_train, y_train)
     validate_predict = logit.score(X_validate, y_validate)
-    the_df.loc[2] = ['LogisticRegression', train_predict, validate_predict]
+    the_df.loc[2] = ['LogisticRegression', round(train_predict, 3), round(validate_predict, 3)]
 
 
     forest = RandomForestClassifier(random_state = 123, max_depth=5)
     forest.fit(X_train, y_train)    
     train_predict = forest.score(X_train, y_train)
     validate_predict = forest.score(X_validate, y_validate)
-    the_df.loc[3] = ['RandomForestClassifier', train_predict, validate_predict]    
+    the_df.loc[3] = ['RandomForestClassifier', round(train_predict, 3), round(validate_predict, 3)]    
 
 
     tree = DecisionTreeClassifier(random_state = 123,max_depth=6)
     tree.fit(X_train, y_train)
     train_predict = tree.score(X_train, y_train)
     validate_predict = tree.score(X_validate, y_validate)
-    the_df.loc[4] = ['DecisionTreeClassifier', train_predict, validate_predict]    
+    the_df.loc[4] = ['DecisionTreeClassifier', round(train_predict, 3), round(validate_predict, 3)]    
 
     return the_df
 
