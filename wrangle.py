@@ -389,7 +389,7 @@ def create_random_forest(X_train,y_train, X_validate, y_validate,X_test, y_test)
     test_df = pd.DataFrame(data=[
     {
         'model_train':'RandomForestClassifier',
-        'baseline':2254/(2254+1268),
+        'baseline':round((2254/(2254+1268)),3),
         'max_depth': 'max_depth'
     }
     ])
@@ -421,8 +421,8 @@ def create_descision_tree(X_train,y_train, X_validate, y_validate):
     the_df = pd.DataFrame(data=[
     {
         'model_train':'DecisionTreeClassifier',
-        'train_predict':2254/(2254+1268),
-        'validate_predict':2254/(2254+1268),
+        'train_predict':2255/(2255+1267),
+        'validate_predict':2255/(2255+1267),
         'max_depth': 'max_depth'
     }
     ])
@@ -445,8 +445,8 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 
     the_df = pd.DataFrame(data=[
     {
         'model_train':'baseline',
-        'train_predict':2254/(2254+1268),
-        'validate_predict':2254/(2254+1268)
+        'train_predict':round((2255/(2255+1267)),3),
+        'validate_predict':round((2255/(2255+1267)),3)
     }
     ])
 
@@ -475,7 +475,7 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 
     tree.fit(X_train, y_train)
     train_predict = tree.score(X_train, y_train)
     validate_predict = tree.score(X_validate, y_validate)
-    the_df.loc[4] = ['DecisionTreeClassifier', round(train_predict, 3), round(validate_predict, 3)]    
+    the_df.loc[4] = ['DecisionTreeClassifier', str(round(train_predict, 3))[:5], str(round(validate_predict, 3))[:5]]    
 
     return the_df
 
