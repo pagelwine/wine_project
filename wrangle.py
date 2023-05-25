@@ -77,9 +77,9 @@ def split_data(df, target):
 def get_cluster_columns(train, validate, test, features_list, clusters =3, init_array='k-means++', iterations = 300):
     
     for list_item in features_list:
-        
-        X = train[[list_item[0], list_item[1]]]
 
+        X = train[[list_item[0], list_item[1]]]
+       
         kmeans = KMeans(n_clusters=clusters
                 , init = init_array
                 , max_iter=iterations
@@ -296,14 +296,14 @@ def get_model_numbers(X_train, X_validate, X_test, y_train, y_validate, y_test):
 def mvp_info(train_scaled, validate_scaled, test_scaled,list_of_features):
 
 
-    X_train = train_scaled[[list_of_features]]
-    X_validate = validate_scaled[[list_of_features]]
-    X_test = test_scaled[[list_of_features]]
+    X_train = train_scaled[list_of_features]
+    X_validate = validate_scaled[list_of_features]
+    X_test = test_scaled[list_of_features]
 
 
-    y_train = train_scaled.quality
-    y_validate = validate_scaled.quality
-    y_test = test_scaled.quality
+    y_train = train_scaled.quality_bin
+    y_validate = validate_scaled.quality_bin
+    y_test = test_scaled.quality_bin
 
 
     return X_train, X_validate, X_test, y_train, y_validate, y_test
@@ -493,3 +493,71 @@ def super_classification_model(X_train,y_train, X_validate, y_validate, the_c = 
     the_df.loc[4] = ['DecisionTreeClassifier', train_predict, validate_predict]    
 
     return the_df
+
+
+def correlation_charts(train):
+    plt.figure(figsize=(14,3))
+    plt.suptitle('Bivariate Exploration: The Strongest Correlators of Wine Quality')
+    for i, col in enumerate(train[['density', 'chlorides', 'alcohol', 'volatile_acidity', 'quality']]):
+        if col != 'quality':
+            plt.subplot(1, 4, i+1)
+            sns.regplot(data = train, x = col, y = 'quality', scatter_kws={'alpha': 0.1}, line_kws={'color': 'red'})
+
+    plt.show()
+
+
+def subplots_one(train):
+    c_list = ['red', 'green']
+
+    plt.figure(figsize=(14,5))
+
+    plt.subplot(131)
+    sns.scatterplot(data=train, x='chlorides', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
+    plt.title('Good quality wines have higher alcohol content and low chlorides.')
+
+    plt.subplot(132)
+    sns.scatterplot(data=train, x='volatile_acidity', y='density', hue='quality_bin', palette=c_list, alpha=0.2)
+    plt.title('Good wines have low volatile acidity')
+
+    plt.subplot(133)
+    sns.scatterplot(data=train, x='volatile_acidity', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
+    plt.title('Bad wines tend to have low alcohol content and higher volatile acidity')
+
+    plt.tight_layout()
+    plt.show()
+
+
+def train_scaled_two(train, train_scaled, c_list):
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(2,2,1)
+    sns.scatterplot(data=train, x='volatile_acidity', y='density', hue='quality_bin', palette=c_list, alpha=0.2)
+
+    plt.subplot(2,2,2)
+    sns.scatterplot(data=train_scaled, x='volatile_acidity', y='density', hue='volatile_acidity_density', palette= ['green', 'red'], alpha=0.2)
+
+    plt.show()
+
+
+def train_scaled_three(train, train_scaled, c_list):
+
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(2,2,1)
+    sns.scatterplot(data=train, x='volatile_acidity', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
+
+    plt.subplot(2,2,2)
+    sns.scatterplot(data=train_scaled, x='volatile_acidity', y='alcohol', hue='volatile_acidity_density', palette= ['green', 'red'], alpha=0.2)
+
+    plt.show()
+
+def train_scaled_four(train, train_scaled, c_list):
+    plt.figure(figsize=(15, 10))
+
+    plt.subplot(2,2,1)
+    sns.scatterplot(data=train, x='chlorides', y='alcohol', hue='quality_bin', palette=c_list, alpha=0.2)
+
+    plt.subplot(2,2,2)
+    sns.scatterplot(data=train_scaled, x='chlorides', y='alcohol', hue='chlorides_alcohol', palette= ['green', 'red'], alpha=0.2)
+
+    plt.show()
